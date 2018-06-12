@@ -1,0 +1,6 @@
+export const asyncTypes = Object.freeze({
+    CREATE_TASK_ASYNC:   'CREATE_TASK_ASYNC',
+    DELETE_TASK_ASYNC:   'DELETE_TASK_ASYNC',
+    EDIT_TASK_ASYNC:     'EDIT_TASK_ASYNC',
+    GET_ALL_TASKS_ASYNC: 'GET_ALL_TASKS_ASYNC',
+});
