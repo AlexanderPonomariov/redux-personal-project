@@ -13,6 +13,7 @@ import Checkbox from "../../theme/assets/Checkbox";
 import { tasksActionsAsync } from "../../redux/tasks/saga/asyncActions";
 import { taskActions } from "../../redux/task/actions";
 import { tasksActions } from "../../redux/tasks/actions";
+import { uiActions } from "../../redux/ui/actions";
 
 const mapStateToProps = (state) => {
     return {
@@ -20,6 +21,7 @@ const mapStateToProps = (state) => {
         dataIsLoading: state.ui.get('dataIsLoading'),
         isEdited:      state.task.get('isEdited'),
         editedMessage: state.task.get('taskMessage'),
+        searchTaskStr: state.ui.get('searchTaskStr'),
     };
 };
 
@@ -30,6 +32,7 @@ const mapDispatchToProps = (dispatch) => {
                 ...taskActions,
                 ...tasksActionsAsync,
                 ...tasksActions,
+                ...uiActions,
             },
             dispatch,
         ),
@@ -51,6 +54,7 @@ export default class Scheduler extends Component {
             return false;
         }
 
+        this.props.actions.changeEditTask(false);
         this.props.actions.createTaskAsync(taskMessage);
         e.target.taskMessage.value = '';
     };
@@ -63,11 +67,32 @@ export default class Scheduler extends Component {
         }
     };
 
+    _handleSearchInput = (e) => {
+        const searchStr = e.target.value;
+
+        this.props.actions.searchTask(searchStr);
+    };
+
+    _handleCompleteAllTasks = () => {
+        const { tasks, actions } = this.props;
+        const notCompletedTasks = tasks.filter((task) => !task.get('completed'));
+
+        notCompletedTasks.size && actions.completeAllTasksAsync(tasks);
+    };
+
     render () {
 
-        const { tasks, dataIsLoading, isEdited, actions, editedMessage } = this.props;
+        const { tasks, dataIsLoading, isEdited, actions, editedMessage, searchTaskStr } = this.props;
 
-        const tasksFavorite = tasks.filter((task) => task.get('favorite') && !task.get('completed')).map((task) => (
+        const filteredTasks = tasks.filter((task) => task.get('message') && task.get('message').indexOf(searchTaskStr) !== -1);
+
+        const tasksFavorite = filteredTasks.filter((task) => task.get('favorite') && !task.get('completed'));
+
+        const tasksUsual = filteredTasks.filter((task) => !task.get('favorite') && !task.get('completed'));
+
+        const tasksCompleated = filteredTasks.filter((task) => task.get('completed'));
+
+        const tasksArr = [...tasksFavorite, ...tasksUsual, ...tasksCompleated].map((task) => (
             <Task
                 { ...actions }
                 completed = { task.get("completed") }
@@ -79,33 +104,6 @@ export default class Scheduler extends Component {
                 message = { task.get("message") }
             />
         ));
-
-        const tasksUsual =tasks.filter((task) => !task.get('favorite') && !task.get('completed')).map((task) => (
-            <Task
-                { ...actions }
-                completed = { task.get("completed") }
-                editedMessage = { editedMessage }
-                favorite = { task.get("favorite") }
-                id = { task.get("id") }
-                isEdited = { isEdited }
-                key = { task.get("id") }
-                message = { task.get("message") }
-            />
-        ));
-
-        const tasksCompleated = tasks.filter((task) => task.get('completed')).map((task) => (
-            <Task
-                { ...actions }
-                completed = { task.get("completed") }
-                editedMessage = { editedMessage }
-                favorite = { task.get("favorite") }
-                id = { task.get("id") }
-                isEdited = { isEdited }
-                key = { task.get("id") }
-                message = { task.get("message") }
-            />
-        ));
-
 
         return (
             <section className = { Styles.scheduler }>
@@ -114,7 +112,11 @@ export default class Scheduler extends Component {
                     <header>
                         <h1>Планировщик задач</h1>
                         <form>
-                            <input placeholder = { "Поиск" } type = 'search' onChange = { this._getFilterString } />
+                            <input
+                                placeholder = { "Поиск" }
+                                type = 'search'
+                                onChange = { this._handleSearchInput }
+                            />
                         </form>
                     </header>
                     <section>
@@ -129,14 +131,17 @@ export default class Scheduler extends Component {
                         </form>
                         <div className = { Styles.overlay }>
                             <ul>
-                                { tasksFavorite }
-                                { tasksUsual }
-                                { tasksCompleated }
+                                {tasksArr}
                             </ul>
                         </div>
                     </section>
                     <footer>
-                        <Checkbox checked color1 = { "#3B8EF3" } color2 = { "#fff" } />
+                        <Checkbox
+                            checked = { ![...tasksUsual, ...tasksFavorite].length }
+                            color1 = { "#3B8EF3" }
+                            color2 = { "#fff" }
+                            onClick = { this._handleCompleteAllTasks }
+                        />
                         <div>Все задачи выполнены</div>
                     </footer>
                 </main>

@@ -5,9 +5,9 @@ export const taskActions = Object.freeze({
         type:    types.CHANGE_EDIT_TASK,
         payload: taskId,
     }),
-    changeTaskMessage: (message) => ({
+    changeTaskMessage: (messageObj) => ({
         type:    types.CHANGE_TASK_MESSAGE,
-        payload: message,
+        payload: messageObj,
     }),
 
 });

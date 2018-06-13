@@ -5,6 +5,7 @@ import { callCreateTaskWorker } from './workers/createTask';
 import { callDeleteTaskWorker } from './workers/deleteTask';
 import { callEditTaskWorker } from './workers/editTask';
 import { callGetAllTasksWorker } from './workers/getAllTasks';
+import { callCompleteAllTasksWorker } from './workers/completeAllTasks';
 
 export const tasksWatchers = Object.freeze({
     * watchCreateTask () {
@@ -18,5 +19,8 @@ export const tasksWatchers = Object.freeze({
     },
     * watchGetAllTasks () {
         yield takeEvery(asyncTypes.GET_ALL_TASKS_ASYNC, callGetAllTasksWorker);
+    },
+    * watchCompleteAllTasks () {
+        yield takeEvery(asyncTypes.COMPLETE_ALL_TASKS_ASYNC, callCompleteAllTasksWorker);
     },
 });

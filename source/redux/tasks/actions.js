@@ -17,4 +17,8 @@ export const tasksActions = Object.freeze({
         type:    types.GET_ALL_TASKS,
         payload: tasks,
     }),
+    completeAllTasks: (tasks) => ({
+        type: types.COMPLETE_ALL_TASKS,
+        payload: tasks,
+    }),
 });

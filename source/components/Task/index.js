@@ -11,13 +11,17 @@ import Checkbox from '../../theme/assets/Checkbox';
 
 export default class Task extends Component {
 
+    componentDidUpdate () {
+        this.taskInput.current.focus();
+    }
+
     _handleMessageChange = (e) => {
         const taskMessage = e.target.value;
 
         if (taskMessage.length >= 50) {
             e.target.value = taskMessage.substr(0, 50);
         }
-        this.props.changeTaskMessage(e.target.value);
+        this.props.changeTaskMessage({ id: this.props.id, message: e.target.value });
     };
 
     _handleMessageSubmit = (e) => {
@@ -28,18 +32,20 @@ export default class Task extends Component {
         if (e.key === 'Escape') {
             this.props.changeTaskMessage('');
             this.props.changeEditTask(false);
+            this.props.changeTaskMessage({ id: this.props.id, message: '' });
         }
     };
 
     _toggleEdit = (id) => {
         if (id === this.props.isEdited) {
-            this.props.editTask({ ...this.props, message: this.props.editedMessage });
-            this.props.editTaskAsync({ ...this.props, message: this.props.editedMessage });
             this.props.changeEditTask(false);
+            this.props.changeTaskMessage({ id: this.props.id, message: '' });
         } else {
             this.props.changeEditTask(id);
         }
     };
+
+    taskInput = React.createRef();
 
     render () {
         const { message, favorite, isEdited, id, completed, deleteTaskAsync, editTaskAsync, editedMessage } = this.props;
@@ -50,6 +56,10 @@ export default class Task extends Component {
                 [Styles.completed]: completed,
             }
         );
+
+        const taskMessage = editedMessage.get('message') && editedMessage.get('id') === id
+            ? editedMessage.get('message')
+            : message;
 
         return (
             <li className = { taskClass }>
@@ -63,11 +73,13 @@ export default class Task extends Component {
                     />
 
                     <input
-                        defaultValue = { message }
+                        // defaultValue = { message }
                         disabled = { isEdited !== id }
+                        ref = { this.taskInput }
                         type = 'text'
                         onChange = { this._handleMessageChange }
                         onKeyDown = { this._handleMessageSubmit }
+                        value = { taskMessage }
                     />
 
                 </div>

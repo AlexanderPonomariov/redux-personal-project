@@ -19,4 +19,8 @@ export const tasksActionsAsync = Object.freeze({
     getAllTasksAsync: () => ({
         type: asyncTypes.GET_ALL_TASKS_ASYNC,
     }),
+    completeAllTasksAsync: (tasks) => ({
+        type:    asyncTypes.COMPLETE_ALL_TASKS_ASYNC,
+        payload: tasks,
+    }),
 });

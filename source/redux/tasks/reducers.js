@@ -23,6 +23,8 @@ export const tasksReducer = (state = initialState, action) => {
             }));
         case types.GET_ALL_TASKS:
             return fromJS(action.payload);
+        case types.COMPLETE_ALL_TASKS:
+            return fromJS(action.payload);
         default:
             return state;
     }

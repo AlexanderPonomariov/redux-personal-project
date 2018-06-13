@@ -5,5 +5,8 @@ export const uiActions = Object.freeze({
         type:    types.DATA_IS_LOADING,
         payload: state,
     }),
-
+    searchTask: (searchString) => ({
+        type:    types.SEARCH_TASK,
+        payload: searchString,
+    }),
 });

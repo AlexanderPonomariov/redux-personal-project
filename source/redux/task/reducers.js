@@ -1,10 +1,14 @@
-import { Map, List } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 
 // Instruments
 import { types } from './types';
 
 const initialState = Map({
-    isEdited: false,
+    isEdited:    false,
+    taskMessage: Map({
+        id:      '',
+        message: '',
+    }),
 });
 
 export const taskReducer = (state = initialState, action) => {
@@ -12,7 +16,7 @@ export const taskReducer = (state = initialState, action) => {
         case types.CHANGE_EDIT_TASK:
             return state.set('isEdited', action.payload);
         case types.CHANGE_TASK_MESSAGE:
-            return state.set('taskMessage', action.payload);
+            return state.set('taskMessage', fromJS(action.payload));
         default:
             return state;
     }
