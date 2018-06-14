@@ -1,4 +1,4 @@
-import { Map, List, fromJS } from 'immutable';
+import { List, fromJS } from 'immutable';
 
 // Instruments
 import { types } from './types';

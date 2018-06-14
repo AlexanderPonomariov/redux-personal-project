@@ -1,6 +1,6 @@
 // Core
 import React, { Component } from 'react';
-import { Form, Control, actions, Errors } from 'react-redux-form';
+import { Form, Control, Errors } from 'react-redux-form';
 
 // Instruments
 import Styles from "./styles.m.css";
