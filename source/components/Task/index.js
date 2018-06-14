@@ -52,6 +52,7 @@ export default class Task extends Component {
 
         const taskClass = classNames(
             Styles.task,
+            Styles.move,
             {
                 [Styles.completed]: completed,
             }

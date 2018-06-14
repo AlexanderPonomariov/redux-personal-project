@@ -2,3 +2,43 @@
     --cubic1: cubic-bezier(0.55, 0.085, 0.68, 0.53);
     --cubic2: cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
+
+.task-enter {
+    opacity: 0.01;
+    transform: scale(0.9) translateY(50%);
+}
+.task-enter-active {
+    opacity: 1;
+    transform: scale(1) translateY(0%);
+    transition: all 700ms ease-out;
+    animation-duration: 700ms;
+    animation-name: appear;
+}
+.task-exit {
+    opacity: 1;
+}
+.task-exit-active {
+    opacity: 0.01;
+    transition: opacity 700ms ease-in;
+    animation-duration: 700ms;
+    animation-name: disappear;
+}
+
+@keyframes disappear {
+    from {
+        margin-bottom: 13px;
+    }
+    to {
+        transform: scaleY(0);
+        margin-bottom: -60px;
+    }
+}
+
+@keyframes appear {
+    from {
+        margin-bottom: -60px;
+    }
+    to {
+        margin-bottom: 13px;
+    }
+}

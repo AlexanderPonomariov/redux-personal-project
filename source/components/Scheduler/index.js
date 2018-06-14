@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
+import { CSSTransition, TransitionGroup, Transition } from 'react-transition-group';
 
 // Components
 import Spinner from "../Spinner/";
@@ -57,6 +58,7 @@ export default class Scheduler extends Component {
         const { tasks, actions } = this.props;
         const notCompletedTasks = tasks.filter((task) => !task.get('completed'));
 
+        this.props.actions.changeEditTask(false);
         notCompletedTasks.size && actions.completeAllTasksAsync(tasks);
     };
 
@@ -73,16 +75,21 @@ export default class Scheduler extends Component {
         const tasksCompleated = filteredTasks.filter((task) => task.get('completed'));
 
         const tasksArr = [...tasksFavorite, ...tasksUsual, ...tasksCompleated].map((task) => (
-            <Task
-                { ...actions }
-                completed = { task.get("completed") }
-                editedMessage = { editedMessage }
-                favorite = { task.get("favorite") }
-                id = { task.get("id") }
-                isEdited = { isEdited }
+            <CSSTransition
+                in
+                classNames = 'task'
                 key = { task.get("id") }
-                message = { task.get("message") }
-            />
+                timeout = { 700 }>
+                <Task
+                    { ...actions }
+                    completed = { task.get("completed") }
+                    editedMessage = { editedMessage }
+                    favorite = { task.get("favorite") }
+                    id = { task.get("id") }
+                    isEdited = { isEdited }
+                    message = { task.get("message") }
+                />
+            </CSSTransition>
         ));
 
         return (
@@ -107,7 +114,9 @@ export default class Scheduler extends Component {
                         />
                         <div className = { Styles.overlay }>
                             <ul>
-                                {tasksArr}
+                                <TransitionGroup>
+                                    {tasksArr}
+                                </TransitionGroup>
                             </ul>
                         </div>
                     </section>
