@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 
 // Components
-import Styles from "./styles.m.css";
 import Spinner from "../Spinner/";
 import Task from "../Task/";
 import Checkbox from "../../theme/assets/Checkbox";
+import CreateTaskForm from '../Forms/CreateTaskForm';
 
 // Instruments
+import Styles from "./styles.m.css";
 import { tasksActionsAsync } from "../../redux/tasks/saga/asyncActions";
 import { taskActions } from "../../redux/task/actions";
 import { tasksActions } from "../../redux/tasks/actions";
@@ -17,11 +18,12 @@ import { uiActions } from "../../redux/ui/actions";
 
 const mapStateToProps = (state) => {
     return {
-        tasks:         state.tasks,
-        dataIsLoading: state.ui.get('dataIsLoading'),
-        isEdited:      state.task.get('isEdited'),
-        editedMessage: state.task.get('taskMessage'),
-        searchTaskStr: state.ui.get('searchTaskStr'),
+        tasks:          state.tasks,
+        dataIsLoading:  state.ui.get('dataIsLoading'),
+        isEdited:       state.task.get('isEdited'),
+        editedMessage:  state.task.get('taskMessage'),
+        searchTaskStr:  state.ui.get('searchTaskStr'),
+        newTaskMessage: state.forms.newTask.taskMessage,
     };
 };
 
@@ -45,28 +47,6 @@ export default class Scheduler extends Component {
         this.props.actions.getAllTasksAsync();
     }
 
-    _createTask = (e) => {
-        e.preventDefault();
-
-        const taskMessage = e.target.taskMessage.value;
-
-        if (taskMessage.length < 1 || taskMessage.length > 50) {
-            return false;
-        }
-
-        this.props.actions.changeEditTask(false);
-        this.props.actions.createTaskAsync(taskMessage);
-        e.target.taskMessage.value = '';
-    };
-
-    _handleTaskInput = (e) => {
-        const taskMessage = e.target.value;
-
-        if (taskMessage.length >= 50) {
-            e.target.value = taskMessage.substr(0, 50);
-        }
-    };
-
     _handleSearchInput = (e) => {
         const searchStr = e.target.value;
 
@@ -82,7 +62,7 @@ export default class Scheduler extends Component {
 
     render () {
 
-        const { tasks, dataIsLoading, isEdited, actions, editedMessage, searchTaskStr } = this.props;
+        const { tasks, dataIsLoading, isEdited, actions, editedMessage, searchTaskStr, newTaskMessage } = this.props;
 
         const filteredTasks = tasks.filter((task) => task.get('message') && task.get('message').indexOf(searchTaskStr) !== -1);
 
@@ -120,15 +100,11 @@ export default class Scheduler extends Component {
                         </form>
                     </header>
                     <section>
-                        <form onSubmit = { this._createTask }>
-                            <input
-                                name = 'taskMessage'
-                                placeholder = { "Описание моей новой задачи" }
-                                type = 'text'
-                                onChange = { this._handleTaskInput }
-                            />
-                            <button>Добавить задачу</button>
-                        </form>
+                        <CreateTaskForm
+                            changeEditTask = { actions.changeEditTask }
+                            createTaskAsync = { actions.createTaskAsync }
+                            newTaskMessage = { newTaskMessage }
+                        />
                         <div className = { Styles.overlay }>
                             <ul>
                                 {tasksArr}

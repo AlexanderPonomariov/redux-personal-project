@@ -1,0 +1,16 @@
+.createTaskForm {
+    position: relative;
+
+    & > div {
+        color: red;
+        position: absolute;
+        right: 250px;
+        top: 30%;
+    }
+
+    .error {
+        transition: box-shadow 0.2s ease-out;
+        box-shadow: 0 0 1px 1px red;
+    }
+}
+

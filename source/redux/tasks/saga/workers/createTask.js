@@ -1,4 +1,5 @@
 import { call, put } from 'redux-saga/effects';
+import { actions } from 'react-redux-form';
 
 import { url, token } from '../../../../config/api';
 import { uiActions } from '../../../ui/actions';
@@ -17,15 +18,16 @@ export function* callCreateTaskWorker ({ payload: taskMessage }) {
             body: JSON.stringify({ message: taskMessage }),
         });
 
-        const { data: task } = yield call([response, response.json]);
+        const { data: task, message } = yield call([response, response.json]);
 
-        // if (response.status !== 200) {
-        //     throw new Error(message);
-        // }
+        if (response.status !== 200) {
+            throw new Error(message);
+        }
 
+        yield put(actions.reset('forms.newTask.taskMessage'));
         yield put(tasksActions.createTask(task));
     } catch (error) {
-        // yield put(uiActions.emitError(error, 'createPostWorker'));
+        console.error('CreateTaskWorker', error);
     } finally {
         yield put(uiActions.dataIsLoading(false));
     }

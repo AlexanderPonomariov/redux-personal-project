@@ -25,7 +25,7 @@ export default class Task extends Component {
     };
 
     _handleMessageSubmit = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && e.target.value.length > 0) {
             this.props.editTaskAsync({ ...this.props, message: e.target.value });
             this.props.changeEditTask(false);
         }
@@ -73,13 +73,12 @@ export default class Task extends Component {
                     />
 
                     <input
-                        // defaultValue = { message }
                         disabled = { isEdited !== id }
                         ref = { this.taskInput }
                         type = 'text'
+                        value = { taskMessage }
                         onChange = { this._handleMessageChange }
                         onKeyDown = { this._handleMessageSubmit }
-                        value = { taskMessage }
                     />
 
                 </div>
@@ -91,7 +90,6 @@ export default class Task extends Component {
                         className = { Styles.setPriority }
                         onClick = { () => editTaskAsync({ ...this.props, favorite: !favorite }) }
                     />
-                    {/*<Star checked = { false } />*/}
                     <Edit
                         inlineBlock
                         checked = { isEdited === id }

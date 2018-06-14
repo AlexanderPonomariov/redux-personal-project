@@ -16,18 +16,15 @@ export function* callDeleteTaskWorker ({ payload: taskId }) {
             body: JSON.stringify({ POST_ID: taskId }),
         });
 
-        // const { data: task } = yield call([response, response.json]);
-        // const data = yield call([response, response.json]);
+        if (response.status !== 204) {
+            const { message } = yield call([response, response.json]);
 
-        // console.log('callDeleteTaskWorker data', data);
-
-        // if (response.status !== 200) {
-        //     throw new Error(message);
-        // }
+            throw new Error(message);
+        }
 
         yield put(tasksActions.deleteTask(taskId));
     } catch (error) {
-        // yield put(uiActions.emitError(error, 'createPostWorker'));
+        console.error('DeleteTaskWorker', error);
     } finally {
         yield put(uiActions.dataIsLoading(false));
     }

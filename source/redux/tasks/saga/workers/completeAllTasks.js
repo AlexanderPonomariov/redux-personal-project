@@ -17,9 +17,6 @@ export function* callCompleteAllTasksWorker ({ payload: tasks }) {
             };
         });
 
-
-        console.log(completedTasks);
-
         const response = yield call(fetch, `${url}`, {
             method:  'PUT',
             headers: {
@@ -29,19 +26,15 @@ export function* callCompleteAllTasksWorker ({ payload: tasks }) {
             body: JSON.stringify(completedTasks),
         });
 
-        const { data: editedTasksArr } = yield call([response, response.json]);
-        // const { data: task } = yield call([response, response.json]);
-        // const { data: tasks } = yield call([response, response.json]);
+        const { data: editedTasksArr, message } = yield call([response, response.json]);
 
-        // console.log('data --> ', data);
-
-        // if (response.status !== 200) {
-        //     throw new Error(message);
-        // }
+        if (response.status !== 200) {
+            throw new Error(message);
+        }
 
         yield put(tasksActions.completeAllTasks(editedTasksArr));
     } catch (error) {
-        // yield put(uiActions.emitError(error, 'createPostWorker'));
+        console.error('CompleteAllTasksWorker', error);
     } finally {
         yield put(uiActions.dataIsLoading(false));
     }

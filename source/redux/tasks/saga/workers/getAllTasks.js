@@ -13,21 +13,17 @@ export function* callGetAllTasksWorker () {
             headers: {
                 'Authorization': token,
             },
-            // body: JSON.stringify({ message: taskMessage }),
         });
 
-        // const { data: task } = yield call([response, response.json]);
-        const { data: tasks } = yield call([response, response.json]);
+        const { data: tasks, message } = yield call([response, response.json]);
 
-        // console.log('data --> ', data);
-
-        // if (response.status !== 200) {
-        //     throw new Error(message);
-        // }
+        if (response.status !== 200) {
+            throw new Error(message);
+        }
 
         yield put(tasksActions.getAllTasks(tasks));
     } catch (error) {
-        // yield put(uiActions.emitError(error, 'createPostWorker'));
+        console.error('GetAllTasksWorker', error);
     } finally {
         yield put(uiActions.dataIsLoading(false));
     }

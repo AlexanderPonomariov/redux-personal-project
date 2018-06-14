@@ -22,15 +22,15 @@ export function* callEditTaskWorker ({ payload: newTaskData }) {
             }]),
         });
 
-        const { data: editedTask } = yield call([response, response.json]);
+        const { data: editedTask, message } = yield call([response, response.json]);
 
-        // if (response.status !== 200) {
-        //     throw new Error(message);
-        // }
+        if (response.status !== 200) {
+            throw new Error(message);
+        }
 
         yield put(tasksActions.editTask(editedTask.pop()));
     } catch (error) {
-        // yield put(uiActions.emitError(error, 'createPostWorker'));
+        console.error('EditTaskWorker', error);
     } finally {
         yield put(uiActions.dataIsLoading(false));
     }
